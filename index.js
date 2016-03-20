@@ -37,9 +37,11 @@ module.exports = function crisp(options) {
   var scriptInHead = options.scriptInHead !== false;
   var onlySplit = options.onlySplit || false;
   var alwaysWriteScript = options.alwaysWriteScript || false;
+  var parseAsFragment = options.parseAsFragment || false;
 
-  var doc = dom5.parse(source);
+  var doc = (parseAsFragment) ? dom5.parseFragment(source) : dom5.parse(source);
   var body = dom5.query(doc, pred.hasTagName('body'));
+  
   var head = dom5.query(doc, pred.hasTagName('head'));
   var scripts = dom5.queryAll(doc, inlineScriptFinder);
 
@@ -70,7 +72,11 @@ module.exports = function crisp(options) {
         head.childNodes.unshift(newScript);
         newScript.parentNode = head;
       } else {
-        dom5.append(body, newScript);
+          if (!parseAsFragment) {
+            dom5.append(body, newScript);
+          } else {
+              dom5.append(doc, newScript);
+          }
       }
     }
   }

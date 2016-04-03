@@ -26,6 +26,9 @@ var inlineScriptFinder = pred.AND(
   ),
   pred.NOT(
     pred.hasAttr('src')
+  ),
+  pred.NOT(
+    pred.hasAttr('data-ignore')
   )
 );
 
